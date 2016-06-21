@@ -44,17 +44,14 @@ third =    'ABCDEFGHJKSTUW'
 fourth =    'ABEHMNPRVWXY'
 
 def outer_is_valid(outercode):
-    An =  re.match('[%s][1-9]$' % (first), outercode)
-    Ann = re.match('[%s][1-9]\d$' % (first), outercode)
-    AAn = re.match('[%s][%s]\d$' % (first, second), outercode)
-    AAnn = re.match('[%s][%s][1-9]\d$' % (first, second), outercode)
-    AnA = re.match('[%s][1-9][%s]$' % (first, third), outercode)
-    AAnA =re.match('[%s][%s][1-9][%s]$' % (first, second, fourth), outercode)
-    print An, Ann , AAn , AAnn , AnA , AAnA
-    if An or Ann or AAn or AAnn or AnA or AAnA:
-       return True
-    else:
-        return False
+    valid = False
+    if re.match('[%s][1-9]$' % (first), outercode): valid = True
+    if re.match('[%s][1-9]\d$' % (first), outercode): valid = True
+    if re.match('[%s][%s]\d$' % (first, second), outercode): valid = True
+    if re.match('[%s][%s][1-9]\d$' % (first, second), outercode): valid = True
+    if re.match('[%s][1-9][%s]$' % (first, third), outercode): valid = True
+    if re.match('[%s][%s][1-9][%s]$' % (first, second, fourth), outercode): valid = True
+    return valid
 
 
 # second part is the inward code; 
@@ -99,3 +96,10 @@ def validate(postalcode):
         return RESULT_CODES['innerbad']
 
     return RESULT_CODES['valid']
+
+if __name__ == '__main__':
+    import sys
+    postalcode = ' '.join(sys.argv[1:])
+    print "postalcode: %s" % postalcode
+    result = validate(postalcode)
+    print "result: %d, explanation: %s" % result

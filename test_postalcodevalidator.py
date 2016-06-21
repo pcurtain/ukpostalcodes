@@ -40,7 +40,7 @@ class PostalCodeValidatorTestCase(unittest.TestCase):
 
     def test_outer_invalid(self):
         # TODO add *more* bad outer codes, 2nd, 3rd and 4th positions
-        for postalcode in ('QC1A 1BB', 'E1J 1BB', 'EI1A 1BB', 'EC1I 1BB'):
+        for postalcode in ('QC1A 1BB', 'E1M 1BB', 'EI1A 1BB', 'EC1I 1BB'):
             code, result = validate(postalcode)
             self.assertEqual(code, RESULT_CODES['outerbad'][0])
 
@@ -49,4 +49,5 @@ class PostalCodeValidatorTestCase(unittest.TestCase):
             code, result = validate(postalcode)
             self.assertEqual(code, RESULT_CODES['valid'][0])
 
-    
+if __name__ == '__main__':
+    unittest.main()
