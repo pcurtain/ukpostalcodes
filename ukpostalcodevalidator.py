@@ -97,9 +97,15 @@ def validate(postalcode):
 
     return RESULT_CODES['valid']
 
+
 if __name__ == '__main__':
+    """ To test, run:  python ukpostalcodevalidator.py EC1A 1BB
+        Obvious extension, depending on need, would be to flesh out an
+        extensive command line handler with getopts to allow for checking all
+        of a file and sending exceptions to a file, perhaps splitting valid and
+        invalid codes into separate files."""
+
     import sys
     postalcode = ' '.join(sys.argv[1:])
-    print "postalcode: %s" % postalcode
     result = validate(postalcode)
     print "result: %d, explanation: %s" % result

@@ -1,3 +1,7 @@
+""" test_postalcodevalidator.py
+    Standard python usage.  To run:  $python -m unittest test_postalcodevalidator
+    """
+
 import unittest
 from ukpostalcodevalidator import validate, RESULT_CODES
 
@@ -48,6 +52,11 @@ class PostalCodeValidatorTestCase(unittest.TestCase):
         for postalcode in self.known_good:
             code, result = validate(postalcode)
             self.assertEqual(code, RESULT_CODES['valid'][0])
+
+    def test_bads_all_fail(self):
+        for postalcode in self.invented_bad:
+            code, result = validate(postalcode)
+            self.assertNotEqual(code, RESULT_CODES['valid'][0])
 
 if __name__ == '__main__':
     unittest.main()
