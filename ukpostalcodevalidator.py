@@ -29,6 +29,8 @@ From the wikipedia page:
     NW1 (NW1W) and SE1 (SE1P).
 """
 
+import re
+
 # first part is the outward code (varies greatly)
 # The letters QVX are not used in the first position.
 first =    'ABCDEFGHIJKLMNOPRSTUWYZ'
@@ -41,12 +43,27 @@ third =    'ABCDEFGHJKSTUW'
 # structure starts with AA9A.
 fourth =    'ABEHMNPRVWXY'
 
+def outer_is_valid(outercode):
+    An =  re.match('[%s][1-9]$' % (first), outercode)
+    Ann = re.match('[%s][1-9]\d$' % (first), outercode)
+    AAn = re.match('[%s][%s]\d$' % (first, second), outercode)
+    AAnn = re.match('[%s][%s][1-9]\d$' % (first, second), outercode)
+    AnA = re.match('[%s][1-9][%s]$' % (first, third), outercode)
+    AAnA =re.match('[%s][%s][1-9][%s]$' % (first, second, fourth), outercode)
+    print An, Ann , AAn , AAnn , AnA , AAnA
+    if An or Ann or AAn or AAnn or AnA or AAnA:
+       return True
+
+
 # second part is the inward code; 
 ## inward code is exactly 3 alphanumeric chars
 ## postcode sector followed by postcode unit
 ## The final two letters do not use the letters CIKMOV, so as not to resemble
 ## digits or each other when hand-written.
 inward = 'ABDEFGHJLNPQRSTUWXYZ'
+def inner_is_valid(innercode):
+    if re.match('\d[%s][%s]$' % (inward, inward), innercode):
+        return True
 
 # Because I'm thinking of this as a library, best to return a result in every
 # case that gives the validation result. Decided to extend http 406 for the errors.
@@ -54,17 +71,27 @@ RESULT_CODES = {
     'valid': (0, 'Post Code is Valid'),
     'length': (4061, 'Length is less than 6 or more than 8 characters'),
     'nospace': (4062, 'String missing space character'),
-    'badouter': (4063, 'The outer code is not valid'),
-    'badinner': (4064, 'The inner code is not valid'),
-    'nonchar': (4065, 'The inner code is not valid'),
+    'nonchar': (4063, 'The inner code is not valid'),
+    'outerbad': (4064, 'The outer code is not valid'),
+    'innerbad': (4065, 'The inner code is not valid'),
 }
+
 
 def validate(postalcode):
     """Validate a UK Postal Code aiming for the fastest exits.
     """
-    # length 6 to 8 characters including the space
+    postalcode = postalcode.strip()
     if not isinstance(postalcode, basestring):
         return RESULT_CODES['nonchar']
+    # length 6 to 8 characters including the space
     if not len(postalcode) in (6, 7, 8):    # could say 'range(6,9)'... less clear
         return RESULT_CODES['length']
-    # contains a single space
+    # contains a single space (shortcut, testing that 'split' returns two parts)
+    code_parts = postalcode.split()
+    if len(code_parts) != 2:
+        return RESULT_CODES['nospace']
+
+    
+
+
+    return RESULT_CODES['valid']
