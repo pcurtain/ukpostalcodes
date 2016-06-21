@@ -53,6 +53,8 @@ def outer_is_valid(outercode):
     print An, Ann , AAn , AAnn , AnA , AAnA
     if An or Ann or AAn or AAnn or AnA or AAnA:
        return True
+    else:
+        return False
 
 
 # second part is the inward code; 
@@ -80,9 +82,9 @@ RESULT_CODES = {
 def validate(postalcode):
     """Validate a UK Postal Code aiming for the fastest exits.
     """
-    postalcode = postalcode.strip()
     if not isinstance(postalcode, basestring):
         return RESULT_CODES['nonchar']
+    postalcode = postalcode.strip()
     # length 6 to 8 characters including the space
     if not len(postalcode) in (6, 7, 8):    # could say 'range(6,9)'... less clear
         return RESULT_CODES['length']
@@ -90,8 +92,10 @@ def validate(postalcode):
     code_parts = postalcode.split()
     if len(code_parts) != 2:
         return RESULT_CODES['nospace']
-
-    
-
+    outercode, innercode = code_parts
+    if not outer_is_valid(outercode):
+        return RESULT_CODES['outerbad']
+    if not inner_is_valid(innercode):
+        return RESULT_CODES['innerbad']
 
     return RESULT_CODES['valid']
